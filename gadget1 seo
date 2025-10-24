@@ -1,0 +1,1250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pro Photo Enhancer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3a0ca3;
+            --accent: #7209b7;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #4cc9f0;
+            --warning: #f72585;
+            --gray: #6c757d;
+            --card-bg: rgba(255, 255, 255, 0.1);
+            --card-border: rgba(255, 255, 255, 0.2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            color: var(--light);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            padding: 30px 0;
+            margin-bottom: 20px;
+        }
+
+        header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            background: linear-gradient(to right, #4cc9f0, #f72585);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            max-width: 700px;
+            margin: 0 auto 20px;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .stat-item {
+            background: var(--card-bg);
+            padding: 15px 25px;
+            border-radius: 10px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--card-border);
+        }
+
+        .stat-item .number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: var(--success);
+        }
+
+        .app-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 1100px) {
+            .app-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .panel {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--card-border);
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .panel-header i {
+            font-size: 1.5rem;
+            margin-right: 10px;
+            color: var(--success);
+        }
+
+        .panel-header h2 {
+            font-size: 1.5rem;
+        }
+
+        .image-container {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 15px;
+            padding: 20px;
+            height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .image-container img {
+            max-width: 100%;
+            max-height: 100%;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .placeholder {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .placeholder i {
+            font-size: 60px;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .upload-area {
+            border: 2px dashed var(--card-border);
+            border-radius: 10px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .upload-area:hover {
+            border-color: var(--primary);
+            background: rgba(67, 97, 238, 0.1);
+        }
+
+        .upload-area i {
+            font-size: 50px;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+
+        .upload-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin: 0 auto;
+            transition: all 0.3s ease;
+        }
+
+        .upload-btn:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .controls-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .controls-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .control-group {
+            margin-bottom: 20px;
+        }
+
+        .control-group h3 {
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .slider-container span {
+            min-width: 40px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        input[type="range"] {
+            flex: 1;
+            height: 8px;
+            -webkit-appearance: none;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            outline: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        input[type="range"]::-webkit-slider-thumb:hover {
+            background: var(--secondary);
+            transform: scale(1.1);
+        }
+
+        .preset-filters {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .preset-filters {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .preset-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--card-border);
+            color: white;
+            padding: 12px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .preset-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .preset-btn.active {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .enhancement-modes {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .mode-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--card-border);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .mode-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .mode-btn.active {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .mode-btn i {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .action-btn {
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .enhance-btn {
+            background: var(--primary);
+            color: white;
+        }
+
+        .enhance-btn:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+        }
+
+        .download-btn {
+            background: var(--success);
+            color: white;
+        }
+
+        .download-btn:hover {
+            background: #3aa8d0;
+            transform: translateY(-2px);
+        }
+
+        .reset-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .reset-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .history-section {
+            margin-top: 30px;
+        }
+
+        .history-container {
+            display: flex;
+            gap: 15px;
+            overflow-x: auto;
+            padding: 10px 5px;
+        }
+
+        .history-item {
+            min-width: 120px;
+            height: 120px;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+            cursor: pointer;
+            opacity: 0.7;
+            transition: all 0.3s ease;
+        }
+
+        .history-item:hover {
+            opacity: 1;
+            transform: scale(1.05);
+        }
+
+        .history-item.active {
+            opacity: 1;
+            border: 2px solid var(--primary);
+        }
+
+        .history-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .history-item .time {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 5px;
+            font-size: 0.8rem;
+            text-align: center;
+        }
+
+        .comparison-section {
+            margin-top: 30px;
+            display: none;
+        }
+
+        .comparison-container {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .comparison-box {
+            flex: 1;
+            min-width: 280px;
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .comparison-box h3 {
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .comparison-image {
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .comparison-image img {
+            max-width: 100%;
+            max-height: 100%;
+            border-radius: 10px;
+        }
+
+        .image-info {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+
+        .tab.active {
+            border-bottom: 3px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 3px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            background: var(--success);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>AI Photo Enhancer Pro</h1>
+            <p>Transform your photos with professional-grade enhancement tools powered by advanced AI algorithms</p>
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="number">5.2M+</div>
+                    <div>Photos Enhanced</div>
+                </div>
+                <div class="stat-item">
+                    <div class="number">98%</div>
+                    <div>User Satisfaction</div>
+                </div>
+                <div class="stat-item">
+                    <div class="number">24/7</div>
+                    <div>AI Processing</div>
+                </div>
+            </div>
+        </header>
+
+        <div class="app-container">
+            <div class="panel">
+                <div class="panel-header">
+                    <i class="fas fa-image"></i>
+                    <h2>Image Editor</h2>
+                </div>
+                
+                <div class="image-container">
+                    <div class="placeholder">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <p>Upload a photo to get started</p>
+                    </div>
+                    <img id="uploaded-image" src="" alt="Uploaded Image">
+                </div>
+                
+                <div class="upload-area" id="upload-area">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <h3>Drag & Drop your image here</h3>
+                    <p>or</p>
+                    <button class="upload-btn" id="upload-btn">
+                        <i class="fas fa-upload"></i> Browse Files
+                    </button>
+                    <input type="file" id="file-input" accept="image/*" style="display: none;">
+                </div>
+                
+                <div class="history-section">
+                    <h3>Edit History</h3>
+                    <div class="history-container" id="history-container">
+                        <!-- History items will be added here dynamically -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-header">
+                    <i class="fas fa-sliders-h"></i>
+                    <h2>Enhancement Controls</h2>
+                </div>
+                
+                <div class="tabs">
+                    <div class="tab active" data-tab="basic">Basic Adjustments</div>
+                    <div class="tab" data-tab="color">Color & Tone</div>
+                    <div class="tab" data-tab="effects">Effects & Filters</div>
+                </div>
+                
+                <div class="tab-content active" id="basic-tab">
+                    <div class="controls-grid">
+                        <div class="control-group">
+                            <h3><i class="fas fa-sun"></i> Brightness</h3>
+                            <div class="slider-container">
+                                <span id="brightness-value">100</span>
+                                <input type="range" id="brightness" min="0" max="200" value="100">
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <h3><i class="fas fa-adjust"></i> Contrast</h3>
+                            <div class="slider-container">
+                                <span id="contrast-value">100</span>
+                                <input type="range" id="contrast" min="0" max="200" value="100">
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <h3><i class="fas fa-filter"></i> Clarity</h3>
+                            <div class="slider-container">
+                                <span id="clarity-value">0</span>
+                                <input type="range" id="clarity" min="0" max="100" value="0">
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <h3><i class="fas fa-magic"></i> Sharpness</h3>
+                            <div class="slider-container">
+                                <span id="sharpness-value">0</span>
+                                <input type="range" id="sharpness" min="0" max="100" value="0">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-content" id="color-tab">
+                    <div class="controls-grid">
+                        <div class="control-group">
+                            <h3><i class="fas fa-palette"></i> Saturation</h3>
+                            <div class="slider-container">
+                                <span id="saturation-value">100</span>
+                                <input type="range" id="saturation" min="0" max="200" value="100">
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <h3><i class="fas fa-tint"></i> Hue</h3>
+                            <div class="slider-container">
+                                <span id="hue-value">0</span>
+                                <input type="range" id="hue" min="0" max="360" value="0">
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <h3><i class="fas fa-temperature-high"></i> Temperature</h3>
+                            <div class="slider-container">
+                                <span id="temperature-value">0</span>
+                                <input type="range" id="temperature" min="-100" max="100" value="0">
+                            </div>
+                        </div>
+
+                        <div class="control-group">
+                            <h3><i class="fas fa-fill-drip"></i> Vibrance</h3>
+                            <div class="slider-container">
+                                <span id="vibrance-value">0</span>
+                                <input type="range" id="vibrance" min="-100" max="100" value="0">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="tab-content" id="effects-tab">
+                    <div class="control-group">
+                        <h3><i class="fas fa-star"></i> Preset Filters</h3>
+                        <div class="preset-filters">
+                            <button class="preset-btn" data-filter="vintage">
+                                <i class="fas fa-camera-retro"></i> Vintage
+                            </button>
+                            <button class="preset-btn" data-filter="dramatic">
+                                <i class="fas fa-theater-masks"></i> Dramatic
+                            </button>
+                            <button class="preset-btn" data-filter="portrait">
+                                <i class="fas fa-user"></i> Portrait
+                            </button>
+                            <button class="preset-btn" data-filter="landscape">
+                                <i class="fas fa-mountain"></i> Landscape
+                            </button>
+                            <button class="preset-btn" data-filter="black-white">
+                                <i class="fas fa-moon"></i> B&W
+                            </button>
+                            <button class="preset-btn" data-filter="cinematic">
+                                <i class="fas fa-film"></i> Cinematic
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <h3><i class="fas fa-robot"></i> AI Enhancement Modes</h3>
+                        <div class="enhancement-modes">
+                            <div class="mode-btn" data-mode="auto">
+                                <i class="fas fa-bolt"></i>
+                                <div>Auto Enhance</div>
+                            </div>
+                            <div class="mode-btn" data-mode="portrait">
+                                <i class="fas fa-user-circle"></i>
+                                <div>Portrait AI</div>
+                            </div>
+                            <div class="mode-btn" data-mode="landscape">
+                                <i class="fas fa-tree"></i>
+                                <div>Landscape AI</div>
+                            </div>
+                            <div class="mode-btn" data-mode="low-light">
+                                <i class="fas fa-moon"></i>
+                                <div>Low Light AI</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="action-buttons">
+                    <button class="action-btn enhance-btn" id="enhance-btn">
+                        <i class="fas fa-bolt"></i> Enhance Photo
+                    </button>
+                    <button class="action-btn download-btn" id="download-btn">
+                        <i class="fas fa-download"></i> Download
+                    </button>
+                    <button class="action-btn reset-btn" id="reset-btn">
+                        <i class="fas fa-redo"></i> Reset
+                    </button>
+                </div>
+                
+                <div class="progress-bar">
+                    <div class="progress" id="enhance-progress"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="comparison-section" id="comparison-section">
+            <h2 style="text-align: center; margin-bottom: 20px;">Before & After Comparison</h2>
+            <div class="comparison-container">
+                <div class="comparison-box">
+                    <h3>Original Image</h3>
+                    <div class="comparison-image">
+                        <img id="original-comparison" src="" alt="Original Image">
+                    </div>
+                    <div class="image-info">
+                        <span>Size: <span id="original-size">0 KB</span></span>
+                        <span>Dimensions: <span id="original-dimensions">0x0</span></span>
+                    </div>
+                </div>
+                <div class="comparison-box">
+                    <h3>Enhanced Image</h3>
+                    <div class="comparison-image">
+                        <img id="enhanced-comparison" src="" alt="Enhanced Image">
+                    </div>
+                    <div class="image-info">
+                        <span>Size: <span id="enhanced-size">0 KB</span></span>
+                        <span>Dimensions: <span id="enhanced-dimensions">0x0</span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>AI Photo Enhancer Pro &copy; 2023 | Powered by Advanced Neural Networks</p>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // DOM Elements
+            const fileInput = document.getElementById('file-input');
+            const uploadBtn = document.getElementById('upload-btn');
+            const uploadArea = document.getElementById('upload-area');
+            const uploadedImage = document.getElementById('uploaded-image');
+            const placeholder = document.querySelector('.placeholder');
+            const historyContainer = document.getElementById('history-container');
+            const tabs = document.querySelectorAll('.tab');
+            const tabContents = document.querySelectorAll('.tab-content');
+            const progressBar = document.getElementById('enhance-progress');
+            
+            // Sliders
+            const brightnessSlider = document.getElementById('brightness');
+            const contrastSlider = document.getElementById('contrast');
+            const claritySlider = document.getElementById('clarity');
+            const sharpnessSlider = document.getElementById('sharpness');
+            const saturationSlider = document.getElementById('saturation');
+            const hueSlider = document.getElementById('hue');
+            const temperatureSlider = document.getElementById('temperature');
+            const vibranceSlider = document.getElementById('vibrance');
+            
+            // Values
+            const brightnessValue = document.getElementById('brightness-value');
+            const contrastValue = document.getElementById('contrast-value');
+            const clarityValue = document.getElementById('clarity-value');
+            const sharpnessValue = document.getElementById('sharpness-value');
+            const saturationValue = document.getElementById('saturation-value');
+            const hueValue = document.getElementById('hue-value');
+            const temperatureValue = document.getElementById('temperature-value');
+            const vibranceValue = document.getElementById('vibrance-value');
+            
+            // Buttons
+            const presetButtons = document.querySelectorAll('.preset-btn');
+            const modeButtons = document.querySelectorAll('.mode-btn');
+            const enhanceBtn = document.getElementById('enhance-btn');
+            const downloadBtn = document.getElementById('download-btn');
+            const resetBtn = document.getElementById('reset-btn');
+            
+            // Comparison
+            const comparisonSection = document.getElementById('comparison-section');
+            const originalComparison = document.getElementById('original-comparison');
+            const enhancedComparison = document.getElementById('enhanced-comparison');
+            const originalSize = document.getElementById('original-size');
+            const enhancedSize = document.getElementById('enhanced-size');
+            const originalDimensions = document.getElementById('original-dimensions');
+            const enhancedDimensions = document.getElementById('enhanced-dimensions');
+            
+            // State
+            let originalImage = null;
+            let enhancedImage = null;
+            let editHistory = [];
+            let currentFilter = '';
+
+            // Initialize
+            initEventListeners();
+            
+            function initEventListeners() {
+                // Upload image
+                uploadBtn.addEventListener('click', () => fileInput.click());
+                uploadArea.addEventListener('click', () => fileInput.click());
+                uploadArea.addEventListener('dragover', handleDragOver);
+                uploadArea.addEventListener('drop', handleDrop);
+                
+                fileInput.addEventListener('change', function(e) {
+                    if (e.target.files && e.target.files[0]) {
+                        loadImage(e.target.files[0]);
+                    }
+                });
+
+                // Tab switching
+                tabs.forEach(tab => {
+                    tab.addEventListener('click', function() {
+                        const tabId = this.getAttribute('data-tab');
+                        
+                        // Update active tab
+                        tabs.forEach(t => t.classList.remove('active'));
+                        this.classList.add('active');
+                        
+                        // Show corresponding content
+                        tabContents.forEach(content => content.classList.remove('active'));
+                        document.getElementById(`${tabId}-tab`).classList.add('active');
+                    });
+                });
+
+                // Update slider values
+                brightnessSlider.addEventListener('input', function() {
+                    brightnessValue.textContent = this.value;
+                    applyFilters();
+                    addToHistory();
+                });
+
+                contrastSlider.addEventListener('input', function() {
+                    contrastValue.textContent = this.value;
+                    applyFilters();
+                    addToHistory();
+                });
+
+                claritySlider.addEventListener('input', function() {
+                    clarityValue.textContent = this.value;
+                    applyFilters();
+                    addToHistory();
+                });
+
+                sharpnessSlider.addEventListener('input', function() {
+                    sharpnessValue.textContent = this.value;
+                    applyFilters();
+                    addToHistory();
+                });
+
+                saturationSlider.addEventListener('input', function() {
+                    saturationValue.textContent = this.value;
+                    applyFilters();
+                    addToHistory();
+                });
+
+                hueSlider.addEventListener('input', function() {
+                    hueValue.textContent = this.value;
+                    applyFilters();
+                    addToHistory();
+                });
+
+                temperatureSlider.addEventListener('input', function() {
+                    temperatureValue.textContent = this.value;
+                    applyFilters();
+                    addToHistory();
+                });
+
+                vibranceSlider.addEventListener('input', function() {
+                    vibranceValue.textContent = this.value;
+                    applyFilters();
+                    addToHistory();
+                });
+
+                // Preset filters
+                presetButtons.forEach(button => {
+                    button.addEventListener('click', function() {
+                        // Remove active class from all buttons
+                        presetButtons.forEach(btn => btn.classList.remove('active'));
+                        // Add active class to clicked button
+                        this.classList.add('active');
+                        
+                        const filter = this.getAttribute('data-filter');
+                        applyPresetFilter(filter);
+                        addToHistory();
+                    });
+                });
+
+                // Enhancement modes
+                modeButtons.forEach(button => {
+                    button.addEventListener('click', function() {
+                        // Remove active class from all buttons
+                        modeButtons.forEach(btn => btn.classList.remove('active'));
+                        // Add active class to clicked button
+                        this.classList.add('active');
+                        
+                        const mode = this.getAttribute('data-mode');
+                        applyEnhancementMode(mode);
+                    });
+                });
+
+                // Action buttons
+                enhanceBtn.addEventListener('click', enhanceImage);
+                downloadBtn.addEventListener('click', downloadImage);
+                resetBtn.addEventListener('click', resetFilters);
+            }
+
+            function handleDragOver(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                uploadArea.style.borderColor = '#4361ee';
+                uploadArea.style.background = 'rgba(67, 97, 238, 0.1)';
+            }
+
+            function handleDrop(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                uploadArea.style.borderColor = '';
+                uploadArea.style.background = '';
+                
+                if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                    loadImage(e.dataTransfer.files[0]);
+                }
+            }
+
+            function loadImage(file) {
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    uploadedImage.src = e.target.result;
+                    uploadedImage.style.display = 'block';
+                    placeholder.style.display = 'none';
+                    originalImage = uploadedImage.src;
+                    
+                    // Store original image info
+                    const img = new Image();
+                    img.onload = function() {
+                        originalDimensions.textContent = `${img.width}x${img.height}`;
+                        originalSize.textContent = `${Math.round(file.size / 1024)} KB`;
+                    };
+                    img.src = e.target.result;
+                    
+                    // Reset filters and history
+                    resetFilters();
+                    editHistory = [];
+                    historyContainer.innerHTML = '';
+                    addToHistory();
+                    
+                    // Hide comparison section
+                    comparisonSection.style.display = 'none';
+                };
+                
+                reader.readAsDataURL(file);
+            }
+
+            function applyFilters() {
+                if (uploadedImage.style.display === 'block') {
+                    const brightness = brightnessSlider.value;
+                    const contrast = contrastSlider.value;
+                    const saturation = saturationSlider.value;
+                    const hue = hueSlider.value;
+                    const clarity = claritySlider.value;
+                    const sharpness = sharpnessSlider.value;
+                    const temperature = temperatureSlider.value;
+                    const vibrance = vibranceSlider.value;
+                    
+                    uploadedImage.style.filter = `
+                        brightness(${brightness}%) 
+                        contrast(${contrast}%) 
+                        saturate(${saturation}%) 
+                        hue-rotate(${hue}deg)
+                        sepia(0%) 
+                        invert(0%)
+                    `;
+                    
+                    // In a real app, clarity, sharpness, temperature and vibrance would be applied
+                    // using more complex algorithms or WebGL
+                }
+            }
+
+            function applyPresetFilter(filter) {
+                currentFilter = filter;
+                
+                switch(filter) {
+                    case 'vintage':
+                        brightnessSlider.value = 110;
+                        contrastSlider.value = 90;
+                        saturationSlider.value = 85;
+                        hueSlider.value = 30;
+                        temperatureSlider.value = 30;
+                        break;
+                    case 'dramatic':
+                        brightnessSlider.value = 80;
+                        contrastSlider.value = 150;
+                        saturationSlider.value = 110;
+                        hueSlider.value = 0;
+                        break;
+                    case 'portrait':
+                        brightnessSlider.value = 105;
+                        contrastSlider.value = 110;
+                        saturationSlider.value = 95;
+                        claritySlider.value = 25;
+                        break;
+                    case 'landscape':
+                        brightnessSlider.value = 100;
+                        contrastSlider.value = 120;
+                        saturationSlider.value = 130;
+                        vibranceSlider.value = 30;
+                        break;
+                    case 'black-white':
+                        brightnessSlider.value = 105;
+                        contrastSlider.value = 120;
+                        saturationSlider.value = 0;
+                        hueSlider.value = 0;
+                        break;
+                    case 'cinematic':
+                        brightnessSlider.value = 90;
+                        contrastSlider.value = 130;
+                        saturationSlider.value = 110;
+                        hueSlider.value = 340;
+                        break;
+                }
+                
+                // Update display values
+                brightnessValue.textContent = brightnessSlider.value;
+                contrastValue.textContent = contrastSlider.value;
+                saturationValue.textContent = saturationSlider.value;
+                hueValue.textContent = hueSlider.value;
+                temperatureValue.textContent = temperatureSlider.value;
+                vibranceValue.textContent = vibranceSlider.value;
+                
+                applyFilters();
+            }
+
+            function applyEnhancementMode(mode) {
+                // Simulate AI processing with progress bar
+                let progress = 0;
+                const interval = setInterval(() => {
+                    progress += 5;
+                    progressBar.style.width = `${progress}%`;
+                    
+                    if (progress >= 100) {
+                        clearInterval(interval);
+                        
+                        // Apply mode-specific enhancements
+                        switch(mode) {
+                            case 'auto':
+                                brightnessSlider.value = 115;
+                                contrastSlider.value = 125;
+                                saturationSlider.value = 110;
+                                claritySlider.value = 20;
+                                break;
+                            case 'portrait':
+                                brightnessSlider.value = 110;
+                                contrastSlider.value = 115;
+                                saturationSlider.value = 105;
+                                claritySlider.value = 30;
+                                sharpnessSlider.value = 15;
+                                break;
+                            case 'landscape':
+                                brightnessSlider.value = 105;
+                                contrastSlider.value = 130;
+                                saturationSlider.value = 120;
+                                claritySlider.value = 25;
+                                vibranceSlider.value = 20;
+                                break;
+                            case 'low-light':
+                                brightnessSlider.value = 140;
+                                contrastSlider.value = 110;
+                                saturationSlider.value = 105;
+                                sharpnessSlider.value = 25;
+                                break;
+                        }
+                        
+                        // Update display values
+                        brightnessValue.textContent = brightnessSlider.value;
+                        contrastValue.textContent = contrastSlider.value;
+                        saturationValue.textContent = saturationSlider.value;
+                        clarityValue.textContent = claritySlider.value;
+                        sharpnessValue.textContent = sharpnessSlider.value;
+                        vibranceValue.textContent = vibranceSlider.value;
+                        
+                        applyFilters();
+                        addToHistory();
+                        
+                        // Reset progress bar
+                        setTimeout(() => {
+                            progressBar.style.width = '0%';
+                        }, 1000);
+                    }
+                }, 50);
+            }
+
+            function enhanceImage() {
+                if (uploadedImage.style.display === 'block') {
+                    // Store current image as original for comparison
+                    originalComparison.src = uploadedImage.src;
+                    
+                    // Apply enhancement (simulated)
+                    brightnessSlider.value = 120;
+                    contrastSlider.value = 130;
+                    saturationSlider.value = 115;
+                    claritySlider.value = 25;
+                    sharpnessSlider.value = 20;
+                    
+                    brightnessValue.textContent = '120';
+                    contrastValue.textContent = '130';
+                    saturationValue.textContent = '115';
+                    clarityValue.textContent = '25';
+                    sharpnessValue.textContent = '20';
+                    
+                    applyFilters();
+                    
+                    // Store enhanced image
+                    enhancedImage = uploadedImage.src;
+                    enhancedComparison.src = uploadedImage.src;
+                    
+                    // Update enhanced image info (simulated improvement)
+                    enhancedDimensions.textContent = originalDimensions.textContent;
+                    const originalSizeNum = parseInt(originalSize.textContent);
+                    enhancedSize.textContent = `${Math.round(originalSizeNum * 1.2)} KB`;
+                    
+                    // Show comparison section
+                    comparisonSection.style.display = 'block';
+                    
+                    // Scroll to comparison
+                    comparisonSection.scrollIntoView({ behavior: 'smooth' });
+                    
+                    addToHistory();
+                } else {
+                    alert('Please upload an image first.');
+                }
+            }
+
+            function downloadImage() {
+                if (uploadedImage.style.display === 'block') {
+                    // In a real app, this would download the enhanced image
+                    alert('Enhanced image downloaded! (This is a demo - in a real app, the image would be downloaded)');
+                } else {
+                    alert('Please upload and enhance an image first.');
+                }
+            }
+
+            function resetFilters() {
+                brightnessSlider.value = 100;
+                contrastSlider.value = 100;
+                saturationSlider.value = 100;
+                hueSlider.value = 0;
+                claritySlider.value = 0;
+                sharpnessSlider.value = 0;
+                temperatureSlider.value = 0;
+                vibranceSlider.value = 0;
+                
+                brightnessValue.textContent = '100';
+                contrastValue.textContent = '100';
+                saturationValue.textContent = '100';
+                hueValue.textContent = '0';
+                clarityValue.textContent = '0';
+                sharpnessValue.textContent = '0';
+                temperatureValue.textContent = '0';
+                vibranceValue.textContent = '0';
+                
+                // Remove active classes
+                presetButtons.forEach(btn => btn.classList.remove('active'));
+                modeButtons.forEach(btn => btn.classList.remove('active'));
+                
+                applyFilters();
+                addToHistory();
+            }
+
+            function addToHistory() {
+                if (uploadedImage.style.display !== 'block') return;
+                
+                const timestamp = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                const historyItem = {
+                    id: Date.now(),
+                    image: uploadedImage.src,
+                    time: timestamp,
+                    filter: currentFilter
+                };
+                
+                editHistory.push(historyItem);
+                
+                // Keep only last 5 history items
+                if (editHistory.length > 5) {
+                    editHistory.shift();
+                }
+                
+                updateHistoryUI();
+            }
+
+            function updateHistoryUI() {
+                historyContainer.innerHTML = '';
+                
+                editHistory.forEach((item, index) => {
+                    const historyElement = document.createElement('div');
+                    historyElement.className = 'history-item';
+                    if (index === editHistory.length - 1) {
+                        historyElement.classList.add('active');
+                    }
+                    
+                    historyElement.innerHTML = `
+                        <img src="${item.image}" alt="Edit history">
+                        <div class="time">${item.time}</div>
+                    `;
+                    
+                    historyElement.addEventListener('click', function() {
+                        // Set image to this history state
+                        uploadedImage.src = item.image;
+                        
+                        // Update active history item
+                        document.querySelectorAll('.history-item').forEach(el => {
+                            el.classList.remove('active');
+                        });
+                        this.classList.add('active');
+                    });
+                    
+                    historyContainer.appendChild(historyElement);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
